@@ -3119,4 +3119,18 @@ declare module 'vscode' {
 	}
 
 	//#endregion
+
+	//#region FileSystemProvider stat readonly - https://github.com/microsoft/vscode/issues/73122
+
+	/**
+	 * The `FileStat`-type represents metadata about a file
+	 */
+	export interface FileStat {
+		/**
+		 * The file is readonly.
+		 */
+		readonly?: boolean;
+	}
+
+	//#endregion
 }

@@ -955,7 +955,8 @@ suite('EditorService', () => {
 			mtime: 0,
 			name: 'resource2',
 			size: 0,
-			isSymbolicLink: false
+			isSymbolicLink: false,
+			readonly: false
 		}));
 		await activeEditorChangePromise;
 

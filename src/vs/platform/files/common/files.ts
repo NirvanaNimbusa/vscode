@@ -336,6 +336,11 @@ export interface IStat {
 	 * The size of the file in bytes.
 	 */
 	size: number;
+
+	/**
+	 * The file is read-only.
+	 */
+	readonly readonly?: boolean;
 }
 
 export interface IWatchOptions {
@@ -868,6 +873,11 @@ interface IBaseStat {
 	 * it is optional.
 	 */
 	readonly etag?: string;
+
+	/**
+	 * The file is read-only.
+	 */
+	readonly readonly?: boolean;
 }
 
 export interface IBaseStatWithMetadata extends Required<IBaseStat> { }
@@ -906,6 +916,7 @@ export interface IFileStatWithMetadata extends IFileStat, IBaseStatWithMetadata 
 	readonly ctime: number;
 	readonly etag: string;
 	readonly size: number;
+	readonly readonly: boolean;
 	readonly children?: IFileStatWithMetadata[];
 }
 
