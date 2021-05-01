@@ -2152,49 +2152,49 @@ declare module 'vscode' {
 
 	//#region https://github.com/microsoft/vscode/issues/16221
 
-	// todo@API rename to InlayHint
+	// todo@API Split between Inlay- and OverlayHints (InlayHint are for a position, OverlayHints for a non-empty range)
 	// todo@API add "mini-markdown" for links and styles
-	// todo@API remove description
-	// (done:)  add InlayHintKind with type, argument, etc
+	// (done) remove description
+	// (done) rename to InlayHint
+	// (done)  add InlayHintKind with type, argument, etc
 
 	export namespace languages {
 		/**
-		 * Register a inline hints provider.
+		 * Register a inlay hints provider.
 		 *
 		 * Multiple providers can be registered for a language. In that case providers are asked in
 		 * parallel and the results are merged. A failing provider (rejected promise or exception) will
 		 * not cause a failure of the whole operation.
 		 *
 		 * @param selector A selector that defines the documents this provider is applicable to.
-		 * @param provider An inline hints provider.
+		 * @param provider An inlay hints provider.
 		 * @return A [disposable](#Disposable) that unregisters this provider when being disposed.
 		 */
-		export function registerInlineHintsProvider(selector: DocumentSelector, provider: InlineHintsProvider): Disposable;
+		export function registerInlayHintsProvider(selector: DocumentSelector, provider: InlayHintsProvider): Disposable;
 	}
 
-	export enum InlineHintKind {
+	export enum InlayHintKind {
 		Other = 0,
 		Type = 1,
 		Parameter = 2,
 	}
 
 	/**
-	 * Inline hint information.
+	 * Inlay hint information.
 	 */
-	export class InlineHint {
+	export class InlayHint {
 		/**
 		 * The text of the hint.
 		 */
 		text: string;
 		/**
-		 * The range of the hint.
+		 * The position of this hint.
 		 */
-		range: Range;
-
-		kind?: InlineHintKind;
-
-		// todo@API remove this
-		description?: string | MarkdownString;
+		position: Position;
+		/**
+		 * The kind of this hint.
+		 */
+		kind?: InlayHintKind;
 		/**
 		 * Whitespace before the hint.
 		 */
@@ -2205,29 +2205,29 @@ declare module 'vscode' {
 		whitespaceAfter?: boolean;
 
 		// todo@API make range first argument
-		constructor(text: string, range: Range, kind?: InlineHintKind);
+		constructor(text: string, position: Position, kind?: InlayHintKind);
 	}
 
 	/**
-	 * The inline hints provider interface defines the contract between extensions and
-	 * the inline hints feature.
+	 * The inlay hints provider interface defines the contract between extensions and
+	 * the inlay hints feature.
 	 */
-	export interface InlineHintsProvider {
+	export interface InlayHintsProvider {
 
 		/**
-		 * An optional event to signal that inline hints have changed.
+		 * An optional event to signal that inlay hints have changed.
 		 * @see [EventEmitter](#EventEmitter)
 		 */
-		onDidChangeInlineHints?: Event<void>;
+		onDidChangeInlayHints?: Event<void>;
 
 		/**
-		 * @param model The document in which the command was invoked.
-		 * @param range The range for which line hints should be computed.
-		 * @param token A cancellation token.
 		 *
-		 * @return A list of arguments labels or a thenable that resolves to such.
+		 * @param model The document in which the command was invoked.
+		 * @param range The range for which inlay hints should be computed.
+		 * @param token A cancellation token.
+		 * @return A list of inlay hints or a thenable that resolves to such.
 		 */
-		provideInlineHints(model: TextDocument, range: Range, token: CancellationToken): ProviderResult<InlineHint[]>;
+		provideInlayHints(model: TextDocument, range: Range, token: CancellationToken): ProviderResult<InlayHint[]>;
 	}
 	//#endregion
 
@@ -3043,27 +3043,6 @@ declare module 'vscode' {
 		* `onDidGrantWorkspaceTrust` event to listen for trust changes.
 		 */
 		export function requestWorkspaceTrust(options?: WorkspaceTrustRequestOptions): Thenable<boolean | undefined>;
-	}
-
-	//#endregion
-
-	//#region https://github.com/microsoft/vscode/issues/115807
-
-	export interface Webview {
-		/**
-		 * @param message A json serializable message to send to the webview.
-		 *
-		 *   For older versions of vscode, if an `ArrayBuffer` is included in `message`,
-		 *   it will not be serialized properly and will not be received by the webview.
-		 *   Similarly any TypedArrays, such as a `Uint8Array`, will be very inefficiently
-		 *   serialized and will also not be recreated as a typed array inside the webview.
-		 *
-		 *   However if your extension targets vscode 1.56+ in the `engines` field of its
-		 *   `package.json` any `ArrayBuffer` values that appear in `message` will be more
-		 *   efficiently transferred to the webview and will also be recreated inside of
-		 *   the webview.
-		 */
-		postMessage(message: any): Thenable<boolean>;
 	}
 
 	//#endregion
